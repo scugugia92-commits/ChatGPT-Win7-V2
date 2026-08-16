@@ -1,0 +1,59 @@
+name: Build Windows 7 x86 EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install MinGW-w64 x86
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-mingw-w64-i686 cmake zip file
+
+      - name: Configure x86 build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_SYSTEM_NAME=Windows \
+            -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc \
+            -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++ \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compile
+        run: |
+          cmake --build build --config Release -j2
+
+      - name: Find EXE
+        run: |
+          find build -type f -iname "*.exe" -print
+          mkdir -p package
+          EXE="$(find build -type f -iname 'ChatGPT-Win7*.exe' | head -n 1)"
+          test -n "$EXE"
+          cp "$EXE" package/ChatGPT-Win7.exe
+          cp config.ini package/
+          cp set_api_key.bat package/
+          cp README.md package/
+
+      - name: Verify 32-bit executable
+        run: |
+          file package/ChatGPT-Win7.exe
+
+      - name: Create ZIP
+        run: |
+          cd package
+          zip -9 ../ChatGPT-Win7-x86-V2.zip *
+
+      - name: Upload Windows 7 build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChatGPT-Win7-x86-V2
+          path: ChatGPT-Win7-x86-V2.zip
+          if-no-files-found: error
