@@ -1,11 +1,9 @@
-#define UNICODE
-#define _UNICODE
-#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
 #include <winhttp.h>
 #include <commdlg.h>
 #include <shellapi.h>
+#include <objidl.h>
 #include <gdiplus.h>
 #include <shlobj.h>
 #ifdef _MSC_VER
