@@ -1,13 +1,57 @@
 cmake_minimum_required(VERSION 3.16)
+
 project(ChatGPTWin7V2 LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_executable(ChatGPT-Win7 WIN32 main.cpp)
-target_compile_definitions(ChatGPT-Win7 PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0601 WINVER=0x0601)
+
+add_executable(ChatGPT-Win7 WIN32
+    main.cpp
+)
+
+target_compile_definitions(
+    ChatGPT-Win7
+    PRIVATE
+    UNICODE
+    _UNICODE
+    WIN32_LEAN_AND_MEAN
+    _WIN32_WINNT=0x0601
+    WINVER=0x0601
+)
+
 if(MSVC)
-  target_compile_options(ChatGPT-Win7 PRIVATE /O2 /arch:SSE2 /MT)
+    target_compile_options(
+        ChatGPT-Win7
+        PRIVATE
+        /O2
+        /arch:SSE2
+        /MT
+    )
 else()
-  target_compile_options(ChatGPT-Win7 PRIVATE -O2 -march=i686 -msse2 -fno-exceptions)
-  target_link_options(ChatGPT-Win7 PRIVATE -static -static-libgcc -static-libstdc++)
+    target_compile_options(
+        ChatGPT-Win7
+        PRIVATE
+        -O2
+        -march=i686
+        -mssse3
+        -fno-exceptions
+    )
+
+    target_link_options(
+        ChatGPT-Win7
+        PRIVATE
+        -static
+        -static-libgcc
+        -static-libstdc++
+    )
 endif()
-target_link_libraries(ChatGPT-Win7 PRIVATE winhttp comdlg32 shell32 ole32 gdiplus)
+
+target_link_libraries(
+    ChatGPT-Win7
+    PRIVATE
+    winhttp
+    comdlg32
+    shell32
+    ole32
+    gdiplus
+)
