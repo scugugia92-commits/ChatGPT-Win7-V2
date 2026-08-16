@@ -37,13 +37,14 @@ else()
         -fno-exceptions
     )
 
-    target_link_options(
-        ChatGPT-Win7
-        PRIVATE
-        -static
-        -static-libgcc
-        -static-libstdc++
-    )
+target_link_options(
+    ChatGPT-Win7
+    PRIVATE
+    -municode
+    -static
+    -static-libgcc
+    -static-libstdc++
+)
 endif()
 
 target_link_libraries(
